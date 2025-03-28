@@ -17,19 +17,25 @@ def generate_random_account_number():
         account_number+= str(random.randint(0,9))
     return account_number
 
-def save_transaction(sender, recipient: str, amount:int, current_date:str):
-    user_data[recipient]["transaction_history"] = []
+def save_transaction(sender, recipient, amount:int, current_date:str):
+    user_datar: Dict[str, Dict[str, Any]] = load_user_data()
+    user_datar[recipient]["transaction_history"] = []
+    print(user_datar,"USER DATAR")
+
     sender_transaction_item = {
         "user": recipient,
         "amount": amount,
-        "date": current_date
+        "date": current_date,
+        "type":"out"
     }
     recipient_transaction_item = {
         "user": sender,
         "amount": amount,
-        "date": current_date
+        "date": current_date,
+        "type":"in"
     }
-    user_data.setdefault(recipient, {}).setdefault("transaction_history", [])
-    user_data[recipient]["transaction_history"].append(recipient_transaction_item)
-    user_data[sender]["transaction_history"].append(sender_transaction_item)
-    save_user_data(user_data)
+    # user_data.setdefault(recipient, {}).setdefault("transaction_history", [])
+    user_datar[recipient]["transaction_history"].append(recipient_transaction_item)
+    save_user_data(user_datar)
+    user_datar[sender]["transaction_history"].append(sender_transaction_item)
+    save_user_data(user_datar)
