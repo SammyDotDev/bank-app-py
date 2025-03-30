@@ -17,25 +17,49 @@ def generate_random_account_number():
         account_number+= str(random.randint(0,9))
     return account_number
 
-def save_transaction(sender, recipient, amount:int, current_date:str):
+def save_transaction(sender:str, recipient:str | None, amount:int, current_date:str, transaction_method):
     user_datar: Dict[str, Dict[str, Any]] = load_user_data()
-    user_datar[recipient]["transaction_history"] = []
-    print(user_datar,"USER DATAR")
 
-    sender_transaction_item = {
-        "user": recipient,
-        "amount": amount,
-        "date": current_date,
-        "type":"out"
-    }
-    recipient_transaction_item = {
-        "user": sender,
-        "amount": amount,
-        "date": current_date,
-        "type":"in"
-    }
-    # user_data.setdefault(recipient, {}).setdefault("transaction_history", [])
-    user_datar[recipient]["transaction_history"].append(recipient_transaction_item)
-    save_user_data(user_datar)
-    user_datar[sender]["transaction_history"].append(sender_transaction_item)
-    save_user_data(user_datar)
+    if transaction_method == "transfer":
+        sender_transaction_item = {
+            "user": recipient,
+            "amount": amount,
+            "date": current_date,
+            "type":"debit",
+            "transaction_method":transaction_method
+        }
+        recipient_transaction_item = {
+            "user": sender,
+            "amount": amount,
+            "date": current_date,
+            "type":"credit",
+            "transaction_method": transaction_method
+        }
+        # user_data.setdefault(recipient, {}).setdefault("transaction_history", [])
+        user_datar[recipient]["transaction_history"].append(recipient_transaction_item)
+        save_user_data(user_datar)
+        user_datar[sender]["transaction_history"].append(sender_transaction_item)
+        save_user_data(user_datar)
+
+    elif transaction_method == "deposit":
+        deposit_transaction_item = {
+            "user": f"{sender}(You)",
+            "amount": amount,
+            "date": current_date,
+            "type": "credit",
+            "transaction_method": transaction_method
+        }
+        user_datar[sender]["transaction_history"].append(deposit_transaction_item)
+        save_user_data(user_datar)
+
+    elif transaction_method == "withdrawal":
+        withdrawal_transaction_item = {
+            "user": f"{sender}(You)",
+            "amount": amount,
+            "date": current_date,
+            "type": "credit",
+            "transaction_method": transaction_method
+        }
+        user_datar[sender]["transaction_history"].append(withdrawal_transaction_item)
+        save_user_data(user_datar)
+
