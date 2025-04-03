@@ -17,34 +17,47 @@ def hashed_password(password):
 # register
 def register():
     username = format_string(input("Enter a username: "))
+    time.sleep(3)
 
     # username invalid
     while len(username) == 0:
+        print("Username Invalid")
         username = format_string(input("Enter a username: "))
+        time.sleep(3)
 
     # already existing username
     while username in user_data:
         print("Username taken, please try a different one")
         username = format_string(input("Enter a username: "))
+        time.sleep(3)
 
     email_address = format_string(input("Enter an email address: "))
     # validate email address
     while not re.fullmatch(regex,email_address):
         print("Invalid email, please try a different one")
         email_address = format_string(input("Enter an email address: "))
+        time.sleep(3)
 
     password = getpass("Enter a password: ")
     confirm_password = getpass("Confirm password: ")
+    time.sleep(3)
 
     # password's match
     while password != confirm_password:
         print("Password's do not match")
         confirm_password = getpass("Confirm password: ")
+        time.sleep(3)
 
     hashed_pass = hashed_password(password)
+    time.sleep(1);print(".")
+    time.sleep(1);print("..")
+    time.sleep(1);print("...")
+    print("loading...")
+    time.sleep(5)
 
     # create transaction pin
     transaction_pin = int(getpass("Enter a 4 digit transaction pin: "))
+    time.sleep(3)
 
     # validate pin
     while len(str(transaction_pin)) != 4:
@@ -52,13 +65,24 @@ def register():
         transaction_pin = int(getpass("Enter a 4 digit transaction pin: "))
 
     confirm_transaction_pin = int(getpass("Confirm transaction pin: "))
+    time.sleep(1);print(".")
+    time.sleep(1);print("..")
+    time.sleep(1);print("...")
+    print("loading...")
+    time.sleep(5)
 
     # validate pin and confirm pin
     while confirm_transaction_pin != transaction_pin:
         print("Pins do not match, Try again")
         confirm_transaction_pin = int(getpass("Confirm transaction pin: "))
+        time.sleep(1);print(".")
+        time.sleep(1);print("..")
+        time.sleep(1);print("...")
+        print("loading...")
+        time.sleep(5)
 
     # generate new account number
+
     account_number = generate_random_account_number()
     current_date = dt.datetime.now().isoformat()
 
@@ -71,12 +95,18 @@ def register():
         "account_number": account_number,
         "transaction_pin":transaction_pin,
         "account_balance":0,
-        "transaction_history":[]
+        "transaction_limit":500000,
+        "transaction_history":[],
     }
     user_details = user_data[username]
 
     # save the user data to json file
     get_users.save_user_data(user_data)
+    time.sleep(1);print(".")
+    time.sleep(1);print("..")
+    time.sleep(1);print("...")
+    print("loading...")
+    time.sleep(5)
 
     #registration successful
     print(f" -----------------------\n|REGISTRATION SUCCESSFUL|\n -----------------------\nUsername:{username}\nAccount Number: {user_data[username]["account_number"]}\nAccount Balance: {0}")
@@ -90,17 +120,42 @@ def register():
 def login():
     updated_user_data = load_user_data()
     username = format_string(input("-----------------------------------------\nEnter your username:  "))
+    time.sleep(3)
 
     # check if account exists
     while username not in updated_user_data:
         print(f"Account with username '{username}' does not exist")
         username = format_string(input("-----------------------------------------\nEnter your username:  "))
+        time.sleep(3)
 
 
     while len(username) == 0:
+        print("Invalid Username")
         username = format_string(input("Enter your username: "))
+        time.sleep(3)
+
+    email_address = format_string(input("Enter your email address: "))
+    time.sleep(3)
+
+    while not re.fullmatch(regex, email_address):
+        print("Invalid email address format")
+        email_address = format_string(input("Enter your email address: "))
+        time.sleep(3)
+
+    while email_address != updated_user_data[username]["email_address"]:
+        print("Invalid email address")
+        email_address = format_string(input("Enter your email address"))
+        time.sleep(3)
+
+
+
     # print("-----------------------------------------\n")
     password = getpass("-----------------------------------------\nEnter your password: ")
+    time.sleep(1);print(".")
+    time.sleep(1);print("..")
+    time.sleep(1);print("...")
+    print("loading...")
+    time.sleep(5)
     while updated_user_data[username]["password"] != hashed_password(password):
         forgot_password = format_string(input("Forgot password?(yes/no): "))
         if forgot_password == "yes":
@@ -123,16 +178,19 @@ def login():
 def change_password():
     updated_user_data = load_user_data()
     username = format_string(input("-----------------------------------------\nEnter your username: "))
+    time.sleep(3)
 
     # username invalid
     while len(username) == 0 or username not in updated_user_data:
         print("Invalid username")
         username = format_string(input("Enter your username: "))
+        time.sleep(3)
 
     # username found
     if username in updated_user_data:
         print(f"welcome back {username}")
         old_password = hashed_password(getpass("-----------------------------------------\nEnter your old password: "))
+        time.sleep(3)
 
         # forgot password or incorrect password
         while updated_user_data[username]["password"] != old_password:
@@ -142,16 +200,33 @@ def change_password():
             elif forgot_password == "no":
                 pass
             old_password = hashed_password(getpass("-----------------------------------------\nEnter your old password: "))
+            time.sleep(1);print(".")
+            time.sleep(1);print("..")
+            time.sleep(1);print("...")
+            print("loading...")
+            time.sleep(5)
 
         # set new password
         if old_password == updated_user_data[username]["password"]:
             new_password = getpass("Enter your new password: ")
+            confirm_new_password = getpass("Confirm new password: ")
+            time.sleep(3)
+            while confirm_new_password != new_password:
+                print("Passwords don't match")
+                confirm_new_password = getpass("Confirm new password: ")
+                time.sleep(3)
+
             updated_user_data[username]["password"] =hashed_password(new_password)
             new_user_data = updated_user_data
 
             # save updated personal details to json file
             get_users.save_user_data(new_user_data)
-            print("Correct")
+            time.sleep(1);print(".")
+            time.sleep(1);print("..")
+            time.sleep(1);print("...")
+            print("loading...")
+            time.sleep(5)
+            print("Password Updated")
         else:
             print("Incorrect password, Try Again!")
     else:
@@ -163,20 +238,25 @@ def change_username():
         try:
             updated_user_data = load_user_data()
             username = format_string(input("-----------------------------------------\nEnter your current username: "))
+            time.sleep(3)
 
             # username invalid
             while len(username) == 0 or username not in updated_user_data:
                 print("Invalid username")
                 username = format_string(input("Enter your current username: "))
+                time.sleep(3)
 
             new_username = format_string(input("-----------------------------------------\nEnter your new username: "))
+            time.sleep(3)
             while len(new_username) == 0 or username not in updated_user_data:
                 print("Invalid username")
                 username = format_string(input("Enter your new username: "))
+                time.sleep(3)
 
             while new_username in updated_user_data:
                 print("Username exists")
                 new_username = format_string(input("-----------------------------------------\nEnter your new username: "))
+                time.sleep(3)
 
             print(f"Username '{new_username}' is available")
 
@@ -190,10 +270,100 @@ def change_username():
             # updated_user_data.pop(username)
             updated_user_data.pop(username)
             get_users.save_user_data(updated_user_data)
+            time.sleep(1);print(".")
+            time.sleep(1);print("..")
+            time.sleep(1);print("...")
+            print("loading...")
+            time.sleep(5)
             print("Username changed successfully!")
             break
         except:
             print("Please Try Again. An error occurred")
+
+def change_email_address(username):
+    while True:
+        try:
+            updated_user_data = load_user_data()
+            email_address = format_string(input("-----------------------------------------\nEnter your current email address: "))
+            time.sleep(3)
+
+            #invalid email address format
+            while not re.fullmatch(regex, email_address):
+                print("Invalid email address format")
+                email_address = format_string(
+                    input("-----------------------------------------\nEnter your current email address: "))
+                time.sleep(3)
+
+            # if entered email address is not equal to current address
+            while email_address != updated_user_data[username]["email_address"]:
+                print("Email address does not match your current email address")
+                email_address = format_string(
+                    input("-----------------------------------------\nEnter your current email address: "))
+                time.sleep(3)
+            new_email_address = format_string(input("-----------------------------------------\nEnter your new email address: "))
+            time.sleep(3)
+
+            # invalid email address format
+            while not re.fullmatch(regex, new_email_address):
+                print("Invalid email address format")
+                new_email_address = format_string(
+                    input("-----------------------------------------\nEnter your new email address: "))
+                time.sleep(3)
+
+            while new_email_address in updated_user_data:
+                print("This email address already exists\nTry Again!")
+                new_email_address = format_string(
+                    input("-----------------------------------------\nEnter your new email address: "))
+                time.sleep(3)
+
+            print(f"Email address '{new_email_address}'")
+            updated_user_data[username]["email_address"] = new_email_address
+            get_users.save_user_data(updated_user_data)
+            time.sleep(1);print(".")
+            time.sleep(1);print("..")
+            time.sleep(1);print("...")
+            print("loading...")
+            time.sleep(5)
+            print("Email address updated successfully!")
+
+            break
+
+        except:
+            print("Try again, An error occurred")
+
+def update_transaction_limit(username):
+    updated_user_data = load_user_data()
+    max_limit = 5000000
+    min_limit = 5000
+
+    print(f"Maximum Transaction Limit: {max_limit}\nMinimum Transaction Limit: {min_limit}")
+    print("-----------------------------------------\n")
+    while True:
+        try:
+            new_transaction_limit = int(format_string(input("Enter new transaction limit: ")))
+            time.sleep(3)
+
+            while new_transaction_limit > max_limit or new_transaction_limit < min_limit:
+                print(f"Transaction limit must be between {min_limit} and {max_limit}")
+                new_transaction_limit = int(format_string(input("Enter new transaction limit: ")))
+                time.sleep(3)
+
+            updated_user_data[username]["transaction_limit"] = new_transaction_limit
+            get_users.save_user_data(updated_user_data)
+            time.sleep(1);print(".")
+            time.sleep(1);print("..")
+            time.sleep(1);print("...")
+            print("loading...")
+            time.sleep(5)
+            print("Transaction limit upgraded successfully")
+            break
+        except ValueError:
+            print("Invalid Transaction Amount.")
+
+
+
+
+
 
 
 
@@ -204,11 +374,16 @@ class BankApp:
         self.username = username
         self.account_number = account_number
         self.is_logged_in = False
+        self.withdrawal_limit = 300000
 
 
     def bank_functions(self):
         updated_user_data = load_user_data()
-        actions = format_string(input("-----------------------------------------\nWhat actions do you want to perform?\nTransfer --> press 1 \nDeposit --> press 2 \nWithdraw --> press 3 \nChange password --> press 4 \nDelete Account -->press 5 \nDisplay account details --> press 6 \nView transaction history --> press 7\nUpdate personal information --> press 8\nLog out -->press 0\n-----------------------------------------\n"))
+        actionInput = ["1","2","3","4","5","6","7","0"]
+        actions = format_string(input("-----------------------------------------\nWhat actions do you want to perform?\nTransfer --> PRESS 1 \nDeposit --> PRESS 2 \nWithdraw --> PRESS 3 \nDelete Account -->PRESS 4 \nDisplay account details --> PRESS 5 \nView transaction history --> PRESS 6\nUpdate personal information --> PRESS 7\nLog out -->PRESS 0\n-----------------------------------------\n"))
+        while actions not in actionInput:
+            print("Invalid action")
+            self.bank_functions()
         if actions == "1":
             # transfer
             self.transfer()
@@ -219,18 +394,15 @@ class BankApp:
             # withdraw
             self.withdraw()
         elif actions == "4":
-            # change password
-            change_password()
-        elif actions == "5":
             # delete account
             self.remove_account()
-        elif actions == "6":
+        elif actions == "5":
             # display account information
             self.display_account_details()
-        elif actions == "7":
+        elif actions == "6":
             # view transaction history
             self.view_transaction_history()
-        elif actions == "8":
+        elif actions == "7":
             # update personal information
             self.update_personal_details()
         elif actions == "0":
@@ -247,19 +419,27 @@ class BankApp:
 
         while True:
             try:
-                details_to_update = format_string(input("Please enter the field you want to update (username | email address | password): "))
-                if details_to_update == "username":
+                details_to_update = format_string(input("To update username PRESS 1\nTo update email address PRESS 2\nTo update password PRESS 3\nTo increase transaction limit PRESS 4\nTo go back PRESS 0\n: "))
+                if details_to_update == "1":
                     change_username()
                     break
-                elif details_to_update == "emailaddress":
-                    pass
-                elif details_to_update == "password":
+                elif details_to_update == "2":
+                    change_email_address(self.username)
+                    break
+                elif details_to_update == "3":
                     change_password()
+                    break
+                elif details_to_update == "4":
+                    update_transaction_limit(self.username)
+                    break
+                elif details_to_update == "0":
                     break
                 else:
                     print("Invalid input, Try again")
             except ValueError:
-                print("Invalid field. Please enter either (username | email address | password)")
+                print("Invalid field.")
+        if details_to_update == "0":
+            self.bank_functions()
 
         timer_countdown = 5
 
@@ -280,26 +460,30 @@ class BankApp:
     # display account details
     def display_account_details(self):
         updated_user_data = load_user_data()
-        print(f"-----------------------------------------\nHere are your account details\nUsername:{self.username}\nAccount Number: {self.account_number}\nAccount Balance: {user_data[self.username]["account_balance"]}\n-----------------------------------------\n")
+        print(f"-----------------------------------------\nHere are your account details\nUsername:{self.username}\nAccount Number: {self.account_number}\nAccount Balance: {updated_user_data[self.username]["account_balance"]}\n-----------------------------------------\n")
         self.bank_functions()
 
     # transfer money to another user
     def transfer(self):
         updated_user_data = load_user_data()
         username_to_transfer = format_string(input("-----------------------------------------\nEnter the username you want to transfer to: "))
+        time.sleep(3)
         # username does not exist
         while username_to_transfer not in updated_user_data:
             print("Username does not exist, try again")
             username_to_transfer = format_string(
                 input("-----------------------------------------\nEnter the username you want to transfer to: "))
+            time.sleep(3)
 
         account_number_to_transfer = format_string(input("-----------------------------------------\nEnter the recipient's account number: "))
+        time.sleep(3)
 
         # Account number invalid
         while account_number_to_transfer != updated_user_data[username_to_transfer]["account_number"]:
             print("Account number invalid")
             account_number_to_transfer = format_string(
                 input("-----------------------------------------\nEnter the recipient's account number: "))
+            time.sleep(3)
 
 
         # Account number found
@@ -309,15 +493,34 @@ class BankApp:
             while True:
                 try:
                     amount = int(input("-----------------------------------------\nEnter amount to transfer: "))
+                    time.sleep(3)
+
+                    transaction_limit = updated_user_data[self.username]["transaction_limit"]
+
+                    while amount > transaction_limit:
+                        print("Amount is greater than transaction limit. Try again")
+                        amount = int(input("-----------------------------------------\nEnter amount to transfer: "))
+                        time.sleep(3)
+
 
                     transaction_pin = int(getpass("Enter transaction pin: "))
+                    time.sleep(1);print(".")
+                    time.sleep(1);print("..")
+                    time.sleep(1);print("...")
+                    print("loading...")
+                    time.sleep(5)
                     while len(str(transaction_pin)) != 4 | transaction_pin != updated_user_data[self.username][
                         "transaction_pin"]:
                         print("Invalid pin, Try again")
                         transaction_pin = int(getpass("Enter transaction pin: "))
+                        time.sleep(1);print(".")
+                        time.sleep(1);print("..")
+                        time.sleep(1);print("...")
+                        print("loading...")
+                        time.sleep(5)
 
                     # if balance is sufficient
-                    if updated_user_data[username_to_transfer]["account_balance"] > amount:
+                    if updated_user_data[self.username]["account_balance"] > amount:
                         updated_user_data[username_to_transfer]["account_balance"] += amount
                         updated_user_data[self.username]["account_balance"] -= amount
                         get_users.save_user_data(updated_user_data)
@@ -325,6 +528,11 @@ class BankApp:
 
                         # save transaction to transaction history
                         save_transaction(self.username, username_to_transfer, amount, current_date, "transfer")
+                        time.sleep(1);print(".")
+                        time.sleep(1);print("..")
+                        time.sleep(1);print("...")
+                        print("loading...")
+                        time.sleep(5)
                         print(
                             f"You have successfully transferred {amount} to {username_to_transfer}\nYour current balance is: {updated_user_data[self.username]["account_balance"]}")
                         break
@@ -339,6 +547,11 @@ class BankApp:
     # view transaction history
     def view_transaction_history(self):
         updated_user_data = load_user_data()
+        time.sleep(1);print(".")
+        time.sleep(1);print("..")
+        time.sleep(1);print("...")
+        print("loading...")
+        time.sleep(5)
         transaction_history = updated_user_data[self.username]["transaction_history"]
         for item in transaction_history:
             # print(item["user"])
@@ -362,6 +575,11 @@ class BankApp:
     # delete account
     def remove_account(self):
         account_remove_warning = format_string(input("WARNING! THIS ACTION IS IRREVERSIBLE, Do you still want to continue? (yes/no): "))
+        time.sleep(1);print(".")
+        time.sleep(1);print("..")
+        time.sleep(1);print("...")
+        print("please wait...")
+        time.sleep(9)
         if account_remove_warning == "yes":
             user_data.pop(self.username)
             new_user_data = user_data
@@ -385,6 +603,11 @@ class BankApp:
                     deposit = int(
                         input(
                             "-----------------------------------------\nPlease enter the amount you want to deposit: "))
+                    time.sleep(1);print(".")
+                    time.sleep(1);print("..")
+                    time.sleep(1);print("...")
+                    print("loading...")
+                    time.sleep(5)
                     break
 
                 except ValueError:
@@ -403,6 +626,11 @@ class BankApp:
                 current_date = dt.datetime.now().isoformat()
                 save_transaction(self.username, recipient="", amount=deposit, current_date=current_date,
                                  transaction_method="deposit")
+                time.sleep(1);print(".")
+                time.sleep(1);print("..")
+                time.sleep(1);print("...")
+                print("loading...")
+                time.sleep(5)
                 msg = f"-----------------------------------------\nDeposit of {deposit} successful!\nYour Balance is now {user_data[self.username]["account_balance"]}\n-----------------------------------------\n"
                 print(msg)
 
@@ -446,6 +674,13 @@ class BankApp:
         while True:
             try:
                 withdrawal_amount = int(format_string(input("-----------------------------------------\nEnter the amount you want to withdraw: ")))
+
+                # withdrawal limit enforced
+                while withdrawal_amount > self.withdrawal_limit:
+                    print("Withdrawal Failed!. Amount is greater than the withdrawal limit. Increase limit to continue")
+                    withdrawal_amount = int(format_string(input("-----------------------------------------\nEnter the amount you want to withdraw: ")))
+
+                # insufficient funds
                 if withdrawal_amount > updated_user_data[self.username]["account_balance"]:
                     print("Insufficient funds")
                     withdrawal_amount = int(format_string(
@@ -531,7 +766,8 @@ class BankApp:
 try:
     print("Welcome to the Bank App")
     is_new_user = format_string(input("Are you a new user? (yes/no): "))
-    while is_new_user != ("no" or "yes"):
+    lss = ["yes","no"]
+    while is_new_user not in lss:
         is_new_user = format_string(input("Are you a new user? (yes/no): "))
 
     if is_new_user == "yes":
